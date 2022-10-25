@@ -1,7 +1,9 @@
-
+import java.util.Scanner;
 
 public class Main {
     public static String calc(String input) throws Exception {
+        Scanner scanner = new Scanner(System.in);
+        input = scanner.nextLine();
         String[] strAr = input.split(" ");
         String ans = "";
         StringBuilder ansInArabic = new StringBuilder();

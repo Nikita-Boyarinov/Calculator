@@ -1,21 +1,37 @@
 import java.util.Scanner;
 
 public class Main {
-    public static String calc(String input) throws Exception {
+    public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
-        input = scanner.nextLine();
-        String[] strAr = input.split(" ");
+        String input = scanner.nextLine();
+
+        System.out.println(calc(input));
+    }
+
+    public static String calc(String input) throws Exception {
+
         String ans = "";
         StringBuilder ansInArabic = new StringBuilder();
+        int a = 0;
+        int b = 0;
         boolean isArabicNumA = false;
         boolean isArabicNumB = false;
+        String[] strAr = input.split(" ");
+
 
         if (strAr.length > 3) {
             throw new Exception("т.к. формат математической операции не удовлетворяет" +
                     " заданию - два операнда и один оператор (+, -, /, *)");
         }
+        if (strAr[0].length() > 2 ) {
+            throw new Exception("т.к. введен не верный формат данных");
+        }
         if (strAr.length < 3) {
             throw new Exception("т.к. строка не является математической операцией");
+        }
+
+        if (strAr[2].length() > 2) {
+            throw new Exception("т.к. введен не верный формат данных");
         }
 
         if (!(strAr[1].contains("+")) && !(strAr[1].contains("-")) && !(strAr[1].contains("*")) && !(strAr[1].contains("/"))) {
@@ -28,28 +44,50 @@ public class Main {
             if (ar.name().equals(strAr[0])) {
                 isArabicNumA = true;
                 break;
+            } else {
+                try {
+                    a = Integer.parseInt(strAr[0]);
+                    if (a > 10) {
+                        throw new Exception();
+                    }
+                } catch (Exception e) {
+                    throw new Exception("т.к. введен не верный формат данных");
+                }
+
             }
         }
         for (ArabicNum ar : ArabicNum.values()) {
-            if (ar.name().equals(strAr[0])) {
+            if (ar.name().equals(strAr[2])) {
                 isArabicNumB = true;
                 break;
+            } else {
+                try {
+                    b = Integer.parseInt(strAr[2]);
+                    if (b > 10) {
+                        throw new Exception();
+                    }
+                } catch (Exception e) {
+                    throw new Exception("т.к. введен не верный формат данных");
+                }
+
+
             }
         }
-        if (!isArabicNumA && !isArabicNumB) {
-            throw new Exception("т.к. введен неверный формат чисел");
+
+        if ((!isArabicNumA && isArabicNumB) || (isArabicNumA && !isArabicNumB)) {
+            throw new Exception("т.к. используются одновременно разные системы счисления");
         }
         if (isArabicNumA && isArabicNumB) {
 
             ArabicNum arabicNum1 = ArabicNum.valueOf(strAr[0]);
             ArabicNum arabicNum2 = ArabicNum.valueOf(strAr[2]);
-            int a = arabicNum1.getValue();
-            int b = arabicNum2.getValue();
+            a = arabicNum1.getValue();
+            b = arabicNum2.getValue();
             ans = operating(ans, oper, a, b);
             if (Integer.parseInt(ans) < 1) {
                 throw new Exception("т.к. в римской системе нет отрицательных чисел");
             }
-            if (Integer.parseInt(ans) > 10 && Integer.parseInt(ans) < 19) {
+            if (Integer.parseInt(ans) > 10 && Integer.parseInt(ans) <= 19) {
                 ansInArabic.append("X");
                 for (ArabicNum ar : ArabicNum.values()) {
                     if (ar.getValue() == Integer.parseInt(String.valueOf(ans.charAt(1)))) {
@@ -57,7 +95,6 @@ public class Main {
                         return ansInArabic.toString();
                     }
                 }
-
             }
             if (Integer.parseInt(ans) > 19 && Integer.parseInt(ans) < 50) {
                 ansInArabic.append("X".repeat(Math.max(0, Integer.parseInt(ans) / 10)));
@@ -83,32 +120,10 @@ public class Main {
                 ansInArabic.append("C");
                 return ansInArabic.toString();
             }
-
-            for (int i = 0; i < ans.length(); i++) {
-                for (ArabicNum ar : ArabicNum.values()) {
-                    if (ar.getValue() == Integer.parseInt(String.valueOf(ans.charAt(i)))) {
-                        ansInArabic.append(ar.name());
-                        break;
-
-                    }
-                }
-
-            }
             return ansInArabic.toString();
-
-
         } else {
-            try {
-                int a = Integer.parseInt(strAr[0]);
-                int b = Integer.parseInt(strAr[2]);
-                ans = operating(ans, oper, a, b);
-
-            } catch (Exception e) {
-                throw new Exception("т.к. используются одновременно разные системы счисления");
-            }
-
+            ans = operating(ans, oper, a, b);
         }
-
         return ans;
     }
 

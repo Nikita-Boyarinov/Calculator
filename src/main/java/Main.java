@@ -23,7 +23,7 @@ public class Main {
             throw new Exception("т.к. формат математической операции не удовлетворяет" +
                     " заданию - два операнда и один оператор (+, -, /, *)");
         }
-        if (strAr[0].length() > 2 ) {
+        if (strAr[0].length() > 2) {
             throw new Exception("т.к. введен не верный формат данных");
         }
         if (strAr.length < 3) {
@@ -44,39 +44,42 @@ public class Main {
             if (ar.name().equals(strAr[0])) {
                 isArabicNumA = true;
                 break;
-            } else {
-                try {
-                    a = Integer.parseInt(strAr[0]);
-                    if (a > 10) {
-                        throw new Exception();
-                    }
-                } catch (Exception e) {
-                    throw new Exception("т.к. введен не верный формат данных");
-                }
-
             }
         }
         for (ArabicNum ar : ArabicNum.values()) {
             if (ar.name().equals(strAr[2])) {
                 isArabicNumB = true;
                 break;
-            } else {
-                try {
-                    b = Integer.parseInt(strAr[2]);
-                    if (b > 10) {
-                        throw new Exception();
-                    }
-                } catch (Exception e) {
-                    throw new Exception("т.к. введен не верный формат данных");
-                }
-
-
             }
         }
 
         if ((!isArabicNumA && isArabicNumB) || (isArabicNumA && !isArabicNumB)) {
             throw new Exception("т.к. используются одновременно разные системы счисления");
         }
+
+        if (!isArabicNumB) {
+            try {
+                b = Integer.parseInt(strAr[2]);
+                if (b > 10 || b < 1) {
+                    throw new Exception();
+                }
+            } catch (Exception e) {
+                throw new Exception("т.к. введен не верный формат чисел");
+            }
+        }
+
+        if(!isArabicNumA) {
+            try {
+                a = Integer.parseInt(strAr[0]);
+                if (a > 10 || a < 1) {
+                    throw new Exception();
+                }
+            } catch (Exception e) {
+                throw new Exception("т.к. введен не верный формат чисел");
+            }
+        }
+
+
         if (isArabicNumA && isArabicNumB) {
 
             ArabicNum arabicNum1 = ArabicNum.valueOf(strAr[0]);
@@ -85,7 +88,19 @@ public class Main {
             b = arabicNum2.getValue();
             ans = operating(ans, oper, a, b);
             if (Integer.parseInt(ans) < 1) {
-                throw new Exception("т.к. в римской системе нет отрицательных чисел");
+                throw new Exception("т.к. в римской системе исчисления нет отрицательных чисел");
+
+            }
+            if (Integer.parseInt(ans) == 0) {
+                throw new Exception("т.к. в римской системе исчисления нет ноля");
+            }
+            if (Integer.parseInt(ans) <= 10) {
+                for (ArabicNum ar : ArabicNum.values()) {
+                    if (ar.getValue() == Integer.parseInt(ans)) {
+                        ansInArabic.append(ar.name());
+                        return ansInArabic.toString();
+                    }
+                }
             }
             if (Integer.parseInt(ans) > 10 && Integer.parseInt(ans) <= 19) {
                 ansInArabic.append("X");

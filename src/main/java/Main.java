@@ -23,14 +23,14 @@ public class Main {
             throw new Exception("т.к. формат математической операции не удовлетворяет" +
                     " заданию - два операнда и один оператор (+, -, /, *)");
         }
-        if (strAr[0].length() > 2) {
+        if (strAr[0].length() > 4) {
             throw new Exception("т.к. введен не верный формат данных");
         }
         if (strAr.length < 3) {
             throw new Exception("т.к. строка не является математической операцией");
         }
 
-        if (strAr[2].length() > 2) {
+        if (strAr[2].length() > 4) {
             throw new Exception("т.к. введен не верный формат данных");
         }
 
@@ -68,7 +68,7 @@ public class Main {
             }
         }
 
-        if(!isArabicNumA) {
+        if (!isArabicNumA) {
             try {
                 a = Integer.parseInt(strAr[0]);
                 if (a > 10 || a < 1) {
@@ -112,15 +112,43 @@ public class Main {
                 }
             }
             if (Integer.parseInt(ans) > 19 && Integer.parseInt(ans) < 50) {
-                ansInArabic.append("X".repeat(Math.max(0, Integer.parseInt(ans) / 10)));
-                return ansInArabic.toString();
+                int ten = Integer.parseInt(ans) / 10;
+                int lastNum = Integer.parseInt(ans) % 10;
+                if(ten == 4){
+                    ansInArabic.append("X");
+                    ansInArabic.append("L");
+                    for (ArabicNum ar : ArabicNum.values()) {
+                        if (ar.getValue() == lastNum) {
+                            ansInArabic.append(ar.name());
+                            return ansInArabic.toString();
+                        }
+                    }
+                }else {
+                    ansInArabic.append("X".repeat(Math.max(0, ten)));
+                    for (ArabicNum ar : ArabicNum.values()) {
+                        if (ar.getValue() == lastNum) {
+                            ansInArabic.append(ar.name());
+                            return ansInArabic.toString();
+                        }
+                    }
+                }
+
             }
             if (Integer.parseInt(ans) > 51 && Integer.parseInt(ans) < 90) {
                 ansInArabic.append("L");
-                for (int i = (Integer.parseInt(ans) - 50); i > 9; i -= 10) {
-                    ansInArabic.append("X");
+                int ten = (Integer.parseInt(ans) - 50) / 10;
+                int lastNum = Integer.parseInt(ans) % 10;
+                if(ten != 0){
+                    ansInArabic.append("X".repeat(Math.max(0, ten)));
                 }
-                return ansInArabic.toString();
+                if (lastNum != 0) {
+                    for (ArabicNum ar : ArabicNum.values()) {
+                        if (ar.getValue() == lastNum) {
+                            ansInArabic.append(ar.name());
+                            return ansInArabic.toString();
+                        }
+                    }
+                }return ansInArabic.toString();
             }
             if (Integer.parseInt(ans) == 50) {
                 ansInArabic.append("L");
